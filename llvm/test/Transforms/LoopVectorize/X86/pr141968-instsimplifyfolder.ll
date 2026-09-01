@@ -11,11 +11,8 @@ define void @pr141968(i1 %cond, i8 %v, ptr %p) {
 ; CHECK-NEXT:    [[SEXT:%.*]] = sext i8 [[V]] to i16
 ; CHECK-NEXT:    br label %[[PRED_SDIV_CONTINUE28:.*]]
 ; CHECK:       [[PRED_SDIV_CONTINUE28]]:
-; CHECK-NEXT:    [[BROADCAST_SPLATINSERT:%.*]] = insertelement <16 x i1> poison, i1 [[COND]], i64 0
-; CHECK-NEXT:    [[BROADCAST_SPLAT:%.*]] = shufflevector <16 x i1> [[BROADCAST_SPLATINSERT]], <16 x i1> poison, <16 x i32> zeroinitializer
-; CHECK-NEXT:    [[TMP0:%.*]] = xor <16 x i1> [[BROADCAST_SPLAT]], splat (i1 true)
-; CHECK-NEXT:    [[BROADCAST_SPLATINSERT1:%.*]] = insertelement <16 x i8> poison, i8 [[V]], i64 0
-; CHECK-NEXT:    [[BROADCAST_SPLAT2:%.*]] = shufflevector <16 x i8> [[BROADCAST_SPLATINSERT1]], <16 x i8> poison, <16 x i32> zeroinitializer
+; CHECK-NEXT:    [[BROADCAST_SPLATINSERT:%.*]] = insertelement <16 x i8> poison, i8 [[V]], i64 0
+; CHECK-NEXT:    [[BROADCAST_SPLAT:%.*]] = shufflevector <16 x i8> [[BROADCAST_SPLATINSERT]], <16 x i8> poison, <16 x i32> zeroinitializer
 ; CHECK-NEXT:    br label %[[VECTOR_BODY:.*]]
 ; CHECK:       [[VECTOR_BODY]]:
 ; CHECK-NEXT:    [[INDEX:%.*]] = phi i32 [ 0, %[[PRED_SDIV_CONTINUE28]] ], [ [[INDEX_NEXT:%.*]], %[[PRED_SDIV_CONTINUE30:.*]] ]
@@ -23,13 +20,13 @@ define void @pr141968(i1 %cond, i8 %v, ptr %p) {
 ; CHECK:       [[PRED_SDIV_IF29]]:
 ; CHECK-NEXT:    br label %[[PRED_SDIV_CONTINUE30]]
 ; CHECK:       [[PRED_SDIV_CONTINUE30]]:
-; CHECK-NEXT:    [[TMP1:%.*]] = phi <16 x i1> [ zeroinitializer, %[[VECTOR_BODY]] ], [ [[TMP0]], %[[PRED_SDIV_IF29]] ]
-; CHECK-NEXT:    [[PREDPHI1:%.*]] = select <16 x i1> [[TMP1]], <16 x i8> [[BROADCAST_SPLAT2]], <16 x i8> zeroinitializer
+; CHECK-NEXT:    [[TMP0:%.*]] = phi <16 x i1> [ zeroinitializer, %[[VECTOR_BODY]] ], [ splat (i1 true), %[[PRED_SDIV_IF29]] ]
+; CHECK-NEXT:    [[PREDPHI1:%.*]] = select <16 x i1> [[TMP0]], <16 x i8> [[BROADCAST_SPLAT]], <16 x i8> zeroinitializer
 ; CHECK-NEXT:    [[PREDPHI:%.*]] = extractelement <16 x i8> [[PREDPHI1]], i64 15
 ; CHECK-NEXT:    store i8 [[PREDPHI]], ptr [[P]], align 1
 ; CHECK-NEXT:    [[INDEX_NEXT]] = add nuw i32 [[INDEX]], 32
-; CHECK-NEXT:    [[TMP3:%.*]] = icmp eq i32 [[INDEX_NEXT]], 256
-; CHECK-NEXT:    br i1 [[TMP3]], label %[[EXIT1:.*]], label %[[VECTOR_BODY]], !llvm.loop [[LOOP0:![0-9]+]]
+; CHECK-NEXT:    [[TMP2:%.*]] = icmp eq i32 [[INDEX_NEXT]], 256
+; CHECK-NEXT:    br i1 [[TMP2]], label %[[EXIT1:.*]], label %[[VECTOR_BODY]], !llvm.loop [[LOOP0:![0-9]+]]
 ; CHECK:       [[EXIT1]]:
 ; CHECK-NEXT:    br label %[[EXIT:.*]]
 ; CHECK:       [[EXIT]]:

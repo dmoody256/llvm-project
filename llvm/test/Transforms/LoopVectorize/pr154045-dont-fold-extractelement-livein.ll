@@ -17,10 +17,10 @@ define void @pr154045(ptr %p, i1 %c, i64 %x) {
 ; CHECK-NEXT:    br label %[[MIDDLE_BLOCK]]
 ; CHECK:       [[MIDDLE_BLOCK]]:
 ; CHECK-NEXT:    store i32 0, ptr [[P]], align 4
-; CHECK-NEXT:    br label %[[EXIT1:.*]]
-; CHECK:       [[EXIT1]]:
 ; CHECK-NEXT:    br label %[[EXIT:.*]]
 ; CHECK:       [[EXIT]]:
+; CHECK-NEXT:    br label %[[EXIT1:.*]]
+; CHECK:       [[EXIT1]]:
 ; CHECK-NEXT:    ret void
 ;
 entry:
